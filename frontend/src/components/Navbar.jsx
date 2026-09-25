@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const location = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const links = [
     { to: "/", label: "Home" },
@@ -9,91 +11,138 @@ export default function Navbar() {
     { label: "Research" },
     { label: "Media" },
     { label: "Polar Map" },
-    { to: "/latest", label: "Latest" },
-    { to: "/ai-studio", label: "AI Studio" },
+    { to: "/latest", label: "Latest", hasNew: true },
   ];
 
-  return (
-    <nav style={navStyle}>
-      <div style={logoStyle}>PolarCROSS</div>
+  const isActive = (path) => location.pathname === path;
 
-      <div style={linksWrapperStyle}>
-        {links.map((link) =>
-          link.to ? (
-            <Link
-              key={link.label}
-              to={link.to}
-              style={{
-                ...linkStyle,
-                color: location.pathname === link.to ? "#A8D8F5" : "#FFFFFF",
-                borderBottom:
-                  location.pathname === link.to
-                    ? "2px solid #8FC1E3"
-                    : "2px solid transparent",
-              }}
+  function closeMobile() {
+    setMobileOpen(false);
+  }
+
+  return (
+    <>
+      <nav className="navbar">
+        {/* BRAND */}
+        <Link to="/" className="nav-brand" onClick={closeMobile}>
+          <div className="nav-brand-icon">
+            <svg
+              width="23"
+              height="23"
+              viewBox="0 0 64 64"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              {link.label}
-            </Link>
-          ) : (
-            <span
-              key={link.label}
-              style={{
-                ...linkStyle,
-                color: "#FFFFFF",
-                borderBottom: "2px solid transparent",
-                cursor: "default",
-              }}
-            >
-              {link.label}
-            </span>
-          ),
-        )}
-      </div>
-    </nav>
+              <circle
+                cx="32"
+                cy="32"
+                r="21"
+                stroke="white"
+                strokeWidth="2.8"
+                opacity="0.8"
+              />
+
+              <path
+                d="M32 10L37 27L54 32L37 37L32 54L27 37L10 32L27 27L32 10Z"
+                fill="#A8D8F5"
+              />
+
+              <path
+                d="M32 18L34.5 29.5L46 32L34.5 34.5L32 46L29.5 34.5L18 32L29.5 29.5L32 18Z"
+                fill="white"
+              />
+            </svg>
+          </div>
+
+          <span className="nav-brand-text">PolarCROSS</span>
+        </Link>
+
+        {/* DESKTOP LINKS */}
+        <div className="nav-links">
+          {links.map((link) =>
+            link.to ? (
+              <Link
+                key={link.label}
+                to={link.to}
+                className={`nav-link ${isActive(link.to) ? "active" : ""}`}
+              >
+                {link.label === "Latest" ? (
+                  <span className="nav-latest">
+                    {link.label}
+                    {link.hasNew && <span className="latest-dot" />}
+                  </span>
+                ) : (
+                  link.label
+                )}
+              </Link>
+            ) : (
+              <span key={link.label} className="nav-link disabled">
+                {link.label}
+              </span>
+            ),
+          )}
+
+          <Link
+            to="/ai-studio"
+            className={`ai-nav-button ${
+              isActive("/ai-studio") ? "active" : ""
+            }`}
+          >
+            ✦ AI Studio
+          </Link>
+        </div>
+
+        {/* MOBILE MENU BUTTON */}
+        <button
+          className="mobile-menu-button"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={mobileOpen}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+      </nav>
+
+      {/* MOBILE MENU */}
+      {mobileOpen && (
+        <div className="mobile-nav-menu">
+          {links.map((link) =>
+            link.to ? (
+              <Link
+                key={link.label}
+                to={link.to}
+                onClick={closeMobile}
+                className={`mobile-nav-link ${
+                  isActive(link.to) ? "active" : ""
+                }`}
+              >
+                {link.label === "Latest" ? (
+                  <span className="nav-latest">
+                    Latest
+                    <span className="latest-dot" />
+                  </span>
+                ) : (
+                  link.label
+                )}
+              </Link>
+            ) : (
+              <span key={link.label} className="mobile-nav-link">
+                {link.label}
+              </span>
+            ),
+          )}
+
+          <Link
+            to="/ai-studio"
+            onClick={closeMobile}
+            className="mobile-nav-link mobile-ai-link"
+          >
+            ✦ AI Studio
+          </Link>
+        </div>
+      )}
+    </>
   );
 }
-
-const navStyle = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  width: "100%",
-  minHeight: "82px",
-  padding: "1rem 3rem",
-
-  background: "linear-gradient(90deg, #071D34 0%, #0B2D4F 52%, #123F68 100%)",
-
-  borderBottom: "1px solid rgba(168, 216, 245, 0.28)",
-  boxShadow: "0 4px 18px rgba(3, 18, 33, 0.22)",
-
-  position: "sticky",
-  top: 0,
-  zIndex: 100,
-};
-
-const logoStyle = {
-  color: "#FFFFFF",
-  fontWeight: "bold",
-  fontSize: "1.55rem",
-  letterSpacing: "0.4px",
-  whiteSpace: "nowrap",
-  flexShrink: 0,
-};
-
-const linksWrapperStyle = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  gap: "2rem",
-  marginLeft: "2rem",
-  whiteSpace: "nowrap",
-  overflowX: "auto",
-};
-
-const linkStyle = {
-  textDecoration: "none",
-  fontSize: "1rem",
-  paddingBottom: "5px",
-  transition: "all 0.2s ease",
-  flexShrink: 0,
-};
