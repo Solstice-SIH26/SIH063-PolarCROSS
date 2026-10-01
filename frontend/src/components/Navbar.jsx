@@ -10,7 +10,7 @@ export default function Navbar() {
     { label: "Expeditions" },
     { label: "Research" },
     { label: "Media" },
-    { label: "Polar Map" },
+    { to: "/polar-map", label: "Polar Map" },
     { to: "/latest", label: "Latest", hasNew: true },
   ];
 
