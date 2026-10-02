@@ -60,6 +60,12 @@ The system is designed so that scientific information remains connected to its o
 
 ---
 
+## 🎥 Demo Video
+
+Watch the **PolarCROSS** project demo showcasing the interactive polar map, research discovery portal, and AI Outreach Studio.
+
+[▶️ Watch the Demo Video on YouTube](https://youtu.be/jh1OvWHDRMg)
+
 ## Key Features
 
 ### Knowledge Repository
